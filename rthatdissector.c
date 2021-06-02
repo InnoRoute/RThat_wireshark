@@ -58,15 +58,12 @@ gint offset = 0;
 volatile guint16 encap_proto;
 proto_tree *volatile vlan_tree;
 
-    //proto_tree_add_protocol_format(tree, proto_rth_dsa, tvb, 14, 24, "RealtimeHAT DSA tag", plugin_version);
     col_set_str(pinfo->cinfo, COL_PROTOCOL, "RealtimeHAT DSA tag");
-    /* Clear out stuff in the info column */
     col_clear(pinfo->cinfo,COL_INFO);
 
     proto_item *ti = proto_tree_add_item(tree, proto_rth_dsa, tvb, 0, 24, ENC_NA);
     proto_tree *rth_dsa_tree = proto_item_add_subtree(ti, ett_rth_dsa);
-//    proto_tree_add_item(rth_dsa_tree, hf_rth_dsa_inport, tvb, offset, 1, ENC_BIG_ENDIAN);
-//    
+
     proto_tree_add_bits_item(rth_dsa_tree,hf_rth_dsa_inport,tvb,offset*8+0,5,ENC_BIG_ENDIAN);
     proto_tree_add_bits_item(rth_dsa_tree,hf_rth_dsa_outport,tvb,offset*8+5,5,ENC_BIG_ENDIAN);
 		if(tvb_get_ntohs(tvb, 0) & 0b11111000 == 0b11111000){//out packet
@@ -77,11 +74,8 @@ proto_tree *volatile vlan_tree;
 			offset += 4;
 			proto_tree_add_item(rth_dsa_tree, hf_rth_dsa_txconfid, tvb, offset, 4, ENC_BIG_ENDIAN);
 			offset += 4;
-//			proto_tree_add_item(rth_dsa_tree, hf_rth_dsa_pad, tvb, offset, 4, ENC_BIG_ENDIAN);
 			offset += 4;
-//			proto_tree_add_item(rth_dsa_tree, hf_rth_dsa_pad, tvb, offset, 4, ENC_BIG_ENDIAN);
 			offset += 4;
-//			proto_tree_add_item(rth_dsa_tree, hf_rth_dsa_pad, tvb, offset, 4, ENC_BIG_ENDIAN);
 			offset += 4;
 		}else{
 			proto_tree_add_bits_item(rth_dsa_tree,hf_rth_dsa_badrsn,tvb,offset*8+10,5,ENC_BIG_ENDIAN);
@@ -93,16 +87,11 @@ proto_tree *volatile vlan_tree;
 			offset += 4;
 			proto_tree_add_item(rth_dsa_tree, hf_rth_dsa_ctlts, tvb, offset, 8, ENC_BIG_ENDIAN);
 			offset += 8;
-//			proto_tree_add_item(rth_dsa_tree, hf_rth_dsa_pad, tvb, offset, 4, ENC_BIG_ENDIAN);
 			offset += 4;
 		
 		}
 		proto_tree_add_item(rth_dsa_tree, hf_rth_dsa_ethtype, tvb, offset, 2, ENC_BIG_ENDIAN);
-    //vlan_tree = NULL;
-    //vlan_tree = proto_item_add_subtree(ti, ett_vlan);
     encap_proto = tvb_get_ntohs(tvb, offset);
-   // printf("ethertype:%llx\n",encap_proto);
-   // ethertype(encap_proto, tvb, 4, pinfo, tree, vlan_tree, hf_vlan_etype, hf_vlan_trailer, 0);
    
 		 ethertype_data_t ethertype_data;
 		 ethertype_data.etype = encap_proto;
@@ -114,7 +103,6 @@ proto_tree *volatile vlan_tree;
     call_dissector_with_data(ethertype_handle, tvb, pinfo, tree, &ethertype_data);
    
     return tvb_captured_length(tvb);
-    //proto_register_ethertype();
 }
 
 static void
@@ -225,7 +213,6 @@ proto_reg_handoff_rth_dsa(void)
     handle_rth_dsa = create_dissector_handle(dissect_rth_dsa, proto_rth_dsa);
     dissector_add_uint("ethertype", 0x813e, handle_rth_dsa);
     ethertype_handle = find_dissector_add_dependency("ethertype", proto_rth_dsa);
-    //register_postdissector(handle_rth_dsa);
 }
 
 void
