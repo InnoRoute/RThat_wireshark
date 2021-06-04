@@ -51,6 +51,41 @@ static int hf_rth_dsa_ethtype=-1;
 static gint ett_vlan = -1;
 static int hf_rth_dsa_trailer = -1;
 
+static const value_string badnames[] = {
+{0 , "MAC_RX_ER" },
+{1 , "MAC_OVERSIZE" },
+{2 , "MAC_FRAGMENT" },
+{3 , "MAC_RUNT_FRAME" },
+{4 , "<reserved>" },
+{5 , "<reserved>" },
+{6 , "MAC_FCS" },
+{7 , "RX_PAUSE" },
+{8 , "6T_SRC_ADDR_UPSTREAM" },
+{9 , "6T_DST_ADDR_DOWNSTREAM" },
+{10 , "ADDR_LOOPBACK" },
+{11 , "PORT_LOOPBACK" },
+{12 , "PORT_DISABLED" },
+{13 , "NOC_ACTION" },
+{14 , "DROP_SPECIAL_CASE" },
+{15 , "ACC_DP" },
+{16 , "TM_CT" },
+{17 , "MAC_NOT_DSA_TAGGED" },
+{18 , "QCI_GATE_CLOSED" },
+{19 , "NONE" },
+{20 , "<reserved>" },
+{21 , "<reserved>" },
+{22 , "<reserved>" },
+{23 , "<reserved>" },
+{24 , "<reserved>" },
+{25 , "<reserved>" },
+{26 , "PROC_ACC_DEFAULT" },
+{27 , "PROC_SPECIAL_CASE" },
+{28 , "PROC_FC_RULE" },
+{29 , "PROC_ETHSW_SWITCHED" },
+{30 , "PROC_ETHSW_FLOOD" },
+{31 , "PROC_MAC_ROUTED" },
+};
+
 static int
 dissect_rth_dsa(tvbuff_t *tvb, packet_info *pinfo _U_, proto_tree *tree, void *data _U_)
 {
@@ -130,7 +165,7 @@ proto_register_rth_dsa(void)
         { &hf_rth_dsa_badrsn,
             { "BAD reason", "rth_dsa.badrsn",
             FT_UINT8, BASE_DEC,
-            NULL, 0x0,
+            VALS(badnames), 0x0,
             NULL, HFILL }
         },
         { &hf_rth_dsa_bad,
